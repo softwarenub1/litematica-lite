@@ -1,0 +1,43 @@
+name: Build Litematica Lite prototype 05 (experimental)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract experimental source
+        run: |
+          test -f litematica-lite-prototipo-05.zip
+          unzip -q litematica-lite-prototipo-05.zip -d source
+          test -f source/litematica-lite-prototipo-05/gradlew
+
+      - name: Install Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Configure Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Compile experimental prototype
+        working-directory: source/litematica-lite-prototipo-05
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build --stacktrace
+
+      - name: Upload experimental build
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: litematica-lite-prototype-05-UNVERIFIED
+          path: source/litematica-lite-prototipo-05/build/libs/*.jar
+          if-no-files-found: error
