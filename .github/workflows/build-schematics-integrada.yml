@@ -1,0 +1,45 @@
+ame: Build Schematics integrated
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract integrated source
+        run: |
+          test -f schematics-integrada-revision-37.zip
+          mkdir -p source
+          unzip -q schematics-integrada-revision-37.zip -d source
+          test -f source/gradlew
+          test -f source/build.gradle
+
+      - name: Install Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Configure Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Compile integrated build
+        working-directory: source
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build --stacktrace
+
+      - name: Upload build artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: schematics-integrated-UNVERIFIED
+          path: source/build/libs/*.jar
+          if-no-files-found: error
