@@ -15,9 +15,9 @@ jobs:
 
       - name: Extract integrated source
         run: |
-          test -f schematics-integrada-revision-37.zip
+          test -f schematics-integrada-revision-38.zip
           mkdir -p source
-          unzip -q schematics-integrada-revision-37.zip -d source
+          unzip -q schematics-integrada-revision-38.zip -d source
           test -f source/gradlew
           test -f source/build.gradle
 
