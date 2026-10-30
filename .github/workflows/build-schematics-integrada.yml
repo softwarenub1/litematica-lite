@@ -1,4 +1,4 @@
-ame: Build Schematics integrated
+name: Build Schematics integrated
 
 on:
   workflow_dispatch:
